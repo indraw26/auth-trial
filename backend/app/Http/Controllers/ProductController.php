@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -30,6 +31,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::guard('api')->user();
+
+        if ($user->role->name === 'client') {
+            return response()->json([
+                'error' => 'Unauthorized. Clients are not allowed to add products.'
+            ], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
@@ -46,7 +55,10 @@ class ProductController extends Controller
             'image_path' => $imagePath,
         ]);
 
-        return response()->json($product, 201);
+        return response()->json([
+            'message' => 'Product created successfully!',
+            'product' => $product
+        ], 201);
     }
     /**
      * Display the specified resource.
@@ -70,6 +82,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = Auth::guard('api')->user();
+
+        if ($user->role->name === 'client') {
+            return response()->json([
+                'error' => 'Unauthorized. Clients are not allowed to update products.'
+            ], 403);
+        }
         $product = Product::findOrFail($id);
 
         $request->validate([
@@ -92,7 +111,10 @@ class ProductController extends Controller
 
         $product->save();
 
-        return response()->json($product);
+        return response()->json([
+            'message' => 'Product updated successfully!',
+            'product' => $product
+        ]);
     }
 
     /**
@@ -100,7 +122,14 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        $user = Auth::guard('api')->user();
         $product = Product::findOrFail($id);
+
+        if ($user->role->name === 'client') {
+            return response()->json([
+                'error' => 'Unauthorized. Clients are not allowed to deleted products.'
+            ], 403);
+        }
 
         if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
             Storage::disk('public')->delete($product->image_path);
