@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, ChevronDown, LogOut, Search, User } from "lucide-react";
 import { logout, getMe } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
@@ -7,11 +7,21 @@ const Header = ({ children }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useState(() => {
-    getMe()
-      .then((data) => setUser(data))
-      .catch(() => setUser(null));
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getMe();
+        setUser(data);
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const handleLogout = async () => {
@@ -49,7 +59,7 @@ const Header = ({ children }) => {
             >
               <User size={20} className="text-gray-600 mr-2" />
               <span className="text-gray-700 text-sm font-medium">
-                {user ? user.name : "Guest"}
+                {loading ? "Loading.." : user ? user.name : "Guest"}
               </span>
               <ChevronDown
                 size={16}

@@ -67,12 +67,4 @@ class AuthController extends Controller
             'user'         => $user ?? Auth::user()
         ]);
     }
-
-
-    public function test()
-    {
-        $user = User::find(1);
-        $roleName = $user->role->name;
-        return response()->json(compact('user', 'roleName'));
-    }
 }

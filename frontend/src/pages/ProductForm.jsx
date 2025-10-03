@@ -18,11 +18,11 @@ const ProductFormCard = () => {
     image: null,
   });
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false); // ✅ state loading
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
-      setLoading(true); // mulai loading
+      setLoading(true);
       getProduct(id)
         .then((data) => {
           setForm({
@@ -34,7 +34,7 @@ const ProductFormCard = () => {
           setPreview(`http://127.0.0.1:8000/storage/${data.image_path}`);
         })
         .catch((err) => console.error(err))
-        .finally(() => setLoading(false)); // selesai loading
+        .finally(() => setLoading(false));
     }
   }, [id]);
 
@@ -51,12 +51,19 @@ const ProductFormCard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let data;
       if (id) {
-        await updateProduct(id, form);
+        data = await updateProduct(id, form);
       } else {
-        await createProduct(form);
+        data = await createProduct(form);
       }
-      navigate("/products");
+
+      navigate("/products", {
+        state: {
+          message: data.message,
+          type: "success",
+        },
+      });
     } catch (err) {
       console.error("Failed to save product:", err);
     }
@@ -64,17 +71,16 @@ const ProductFormCard = () => {
 
   return (
     <DashboardLayout>
-      {loading ? ( 
+      {loading ? (
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-gray-200"></div>
         </div>
       ) : (
-        <div >
+        <div>
           <h3 className="text-xl font-bold text-gray-800 mb-4">
             {id ? "Edit Product" : "Add Product"}
           </h3>
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Name */}
             <div>
               <label className="block mb-1 font-medium text-gray-700">
                 Name

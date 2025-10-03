@@ -22,9 +22,8 @@ export default function Dashboard() {
     },
   ];
 
-  // Simulate fetching data
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500); // misal 1.5s
+    const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -35,7 +34,6 @@ export default function Dashboard() {
           Dashboard Overview
         </h2>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {loading
             ? Array(stats.length)
@@ -67,7 +65,6 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Users */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-blue-100">
             <h3 className="text-xl font-bold text-gray-800 mb-4">
               Recent Users
@@ -115,7 +112,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="bg-white rounded-xl shadow-lg p-6 border border-blue-100">
             <h3 className="text-xl font-bold text-gray-800 mb-4">
               Quick Actions
