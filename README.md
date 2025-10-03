@@ -91,6 +91,6 @@ Before you begin, ensure you have the following installed:
 
 4. **Start the React development server:**
    ```bash
-   npm start
+   npm run dev
    ```
    The frontend will run at `http://localhost:3000`
